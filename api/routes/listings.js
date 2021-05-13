@@ -5,9 +5,15 @@ const mongoose = require("mongoose");
 
 router.get("/", (req, res, next) => {
   Listing.find()
+    .select("cryptoName price author _id")
     .exec()
     .then((result) => {
-      return res.status(200).json(result);
+      const message = {
+        count: result.length,
+        listings: result,
+      };
+
+      return res.status(200).json(message);
     })
     .catch((err) => {
       console.log(err);
@@ -27,7 +33,10 @@ router.post("/", (req, res, next) => {
     .save()
     .then((result) => {
       console.log(result);
-      return res.status(200).json(result);
+      return res.status(200).json({
+        message: "Listing created sucessfully",
+        listing: result,
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -39,6 +48,7 @@ router.get("/:listingId", (req, res, next) => {
   const id = req.params.listingId;
 
   Listing.findById(id)
+    .select("cryptoName price author _id")
     .exec()
     .then((result) => {
       console.log(result);
@@ -65,11 +75,13 @@ router.patch("/:listingId", (req, res, next) => {
     updateOp[op.propName] = op.value;
   }
 
-  Listing.update({ _id: id }, { $set: updateOp })
+  Listing.updateOne({ _id: id }, { $set: updateOp })
     .exec()
     .then((result) => {
       console.log(result);
-      return res.status(200).json(result);
+      return res.status(200).json({
+        message: "Listing updated sucessfully",
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -83,7 +95,9 @@ router.delete("/:listingId", (req, res, next) => {
     .exec()
     .then((result) => {
       console.log(result);
-      return res.status(200).json(result);
+      return res.status(200).json({
+        message: "Listing deleted sucessfully",
+      });
     })
     .catch((err) => {
       console.log(err);
