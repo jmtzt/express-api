@@ -1,10 +1,18 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const port = process.env.PORT || 3000;
+const mongoose = require("mongoose");
 
 const listingRoutes = require("./api/routes/listings");
+
+// connecting to the database
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 // middlewares
 app.use(morgan("dev"));

@@ -1,46 +1,94 @@
 const express = require("express");
 const router = express.Router();
+const Listing = require("../models/listings");
+const mongoose = require("mongoose");
 
 router.get("/", (req, res, next) => {
-  return res.status(200).json({
-    message: "This is a GET request to the /listings",
-  });
+  Listing.find()
+    .exec()
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(500).json({ error: err });
+    });
 });
 
 router.post("/", (req, res, next) => {
-  const listing = {
+  const listing = new Listing({
+    _id: new mongoose.Types.ObjectId(),
     cryptoName: req.body.cryptoName,
     price: req.body.price,
-  };
-
-  return res.status(200).json({
-    message: "This is a POST request to the /listings route",
-    createdListing: listing,
+    author: req.body.author,
   });
+
+  listing
+    .save()
+    .then((result) => {
+      console.log(result);
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(500).json({ error: err });
+    });
 });
 
 router.get("/:listingId", (req, res, next) => {
   const id = req.params.listingId;
 
-  return res.status(200).json({
-    message: "This is a GET request to the /listings/" + id + " route",
-  });
+  Listing.findById(id)
+    .exec()
+    .then((result) => {
+      console.log(result);
+      if (result) {
+        return res.status(200).json(result);
+      } else {
+        return res
+          .status(404)
+          .json({ message: "No listing entry for the provided ID" });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(500).json({ error: err });
+    });
 });
 
 router.patch("/:listingId", (req, res, next) => {
   const id = req.params.listingId;
 
-  return res.status(200).json({
-    message: "This is a PATCH request to the /listings/" + id + " route",
-  });
+  const updateOp = {};
+
+  for (const op of req.body) {
+    updateOp[op.propName] = op.value;
+  }
+
+  Listing.update({ _id: id }, { $set: updateOp })
+    .exec()
+    .then((result) => {
+      console.log(result);
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(500).json({ error: err });
+    });
 });
 
 router.delete("/:listingId", (req, res, next) => {
   const id = req.params.listingId;
-
-  return res.status(200).json({
-    message: "This is a DELETE request to the /listings/" + id + " route",
-  });
+  Listing.remove({ _id: id })
+    .exec()
+    .then((result) => {
+      console.log(result);
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(500).json({ error: err });
+    });
 });
 
 module.exports = router;
