@@ -8,8 +8,14 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/", (req, res, next) => {
+  const listing = {
+    cryptoName: req.body.cryptoName,
+    price: req.body.price,
+  };
+
   return res.status(200).json({
     message: "This is a POST request to the /listings route",
+    createdListing: listing,
   });
 });
 
