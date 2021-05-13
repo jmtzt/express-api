@@ -7,6 +7,7 @@ const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
 
 const listingRoutes = require("./api/routes/listings");
+const userRoutes = require("./api/routes/user");
 
 // connecting to the database
 mongoose.connect(process.env.MONGO_URI, {
@@ -36,6 +37,7 @@ app.use((req, res, next) => {
 
 //routes
 app.use("/listings", listingRoutes);
+app.use("/auth", userRoutes);
 
 // error handling route
 app.use((req, res, next) => {
