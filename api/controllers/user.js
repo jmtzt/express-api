@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 module.exports = {
   signup: (req, res, next) => {
@@ -18,25 +19,33 @@ module.exports = {
                 error: err,
               });
             } else {
-              const user = new User({
-                _id: new mongoose.Types.ObjectId(),
-                email: req.body.email,
-                password: hash,
-                type: req.body.type
-              });
-              user
-                .save()
-                .then((result) => {
-                  return res.status(201).json({
-                    message: "User created sucessfully",
-                  });
-                })
-                .catch((err) => {
-                  console.log(err);
-                  res.status(500).json({
-                    error: err,
-                  });
+              const type = req.body.type
+              if(type.toUpperCase() == "ADMIN" || type.toUpperCase() == "NORMAL"){
+                const user = new User({
+                  _id: new mongoose.Types.ObjectId(),
+                  email: req.body.email,
+                  password: hash,
+                  type: req.body.type
                 });
+                user
+                  .save()
+                  .then((result) => {
+                    return res.status(201).json({
+                      message: "User created sucessfully",
+                    });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    res.status(500).json({
+                      error: err,
+                    });
+                  });
+              }else{
+                return res.status(400).json({
+                  message: "User type not defined!",
+                  error: err,
+                });
+              }
             }
           });
         }
