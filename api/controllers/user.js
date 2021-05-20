@@ -22,6 +22,7 @@ module.exports = {
                 _id: new mongoose.Types.ObjectId(),
                 email: req.body.email,
                 password: hash,
+                type: req.body.type
               });
               user
                 .save()
@@ -90,5 +91,5 @@ module.exports = {
           error: err,
         });
       });
-  },
+  }
 };
