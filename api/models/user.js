@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
     required: true,
   },
   type:{
-    type: Number,
+    type: String,
     required: true
   } 
 });

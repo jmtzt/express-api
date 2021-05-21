@@ -1,4 +1,5 @@
 const Listing = require("../models/listings");
+const mongoose = require("mongoose");
 
 module.exports = {
   get_all_listings: (req, res, next) => {

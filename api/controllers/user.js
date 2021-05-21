@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 module.exports = {
   signup: (req, res, next) => {
@@ -18,11 +19,12 @@ module.exports = {
                 error: err,
               });
             } else {
+              const userType = req.body.type
               const user = new User({
                 _id: new mongoose.Types.ObjectId(),
                 email: req.body.email,
                 password: hash,
-                type: req.body.type
+                type: userType.toUpperCase()
               });
               user
                 .save()
@@ -77,7 +79,7 @@ module.exports = {
             );
             return res.status(200).json({
               message: "Auth sucessfull",
-              token: token,
+              token: token
             });
           }
           return res.status(401).json({
@@ -91,5 +93,20 @@ module.exports = {
           error: err,
         });
       });
+  },
+
+  getUser: (req,res,next)=>{
+    console.log("req.body", req.body)
+    console.log("email:",req.body.email)
+    User.findOne({ email: req.body.email }) 
+    .select("email type")
+    .exec()
+    .then((result) => {
+      console.log(result)
+      return res.status(200).json(result);
+    })
+    .catch((err)=>{
+      return res.status(400).json({ error: err });
+    })
   }
 };

@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 const mongoose = require("mongoose");
 
 const listingRoutes = require("./api/routes/listings");
