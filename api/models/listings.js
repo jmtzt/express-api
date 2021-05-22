@@ -14,6 +14,11 @@ const listingSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  coinImage: { 
+    type: String, 
+    required: false 
+  }
+
 });
 
 module.exports = mongoose.model("Listing", listingSchema);

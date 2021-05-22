@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 module.exports = {
   get_all_listings: (req, res, next) => {
     Listing.find()
-      .select("cryptoName price author _id")
+      .select("cryptoName price author _id coinImage")
       .exec()
       .then((result) => {
         const message = {
@@ -20,11 +20,13 @@ module.exports = {
       });
   },
   create_listing: (req, res, next) => {
+
     const listing = new Listing({
       _id: new mongoose.Types.ObjectId(),
       cryptoName: req.body.cryptoName,
       price: req.body.price,
       author: req.body.author,
+      coinImage: req.file.path
     });
 
     listing
@@ -45,7 +47,7 @@ module.exports = {
     const id = req.params.listingId;
 
     Listing.findById(id)
-      .select("cryptoName price author _id")
+      .select("cryptoName price author _id coinImage")
       .exec()
       .then((result) => {
         console.log(result);
